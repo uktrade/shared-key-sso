@@ -1,0 +1,9 @@
+---
+applications:
+- name: shared-key-sso 
+  memory: 128M 
+  disk_quota: 256M 
+  instances: 1
+  random-route: true
+  buildpack: python_buildpack
+  command: gunicorn 0.0.0.0:$PORT app:app
