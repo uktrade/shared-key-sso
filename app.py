@@ -1,5 +1,5 @@
 import os
-import time
+import datetime as dt
 import hashlib
 import logging
 from urllib.parse import urljoin, quote_plus
@@ -41,11 +41,12 @@ abc = oauth.remote_app(
 
 
 def _generate_shared_key_url(email):
-    ts = str(int(time.time()))
+    ts = dt.datetime.now().strftime('%Y%M%d%H%M%S')
+
     hash = hashlib.sha256(
         SHARED_KEY.encode('utf-8') +
-        email.encode('utf-8') +
-        ts.encode('utf-8')
+        ts.encode('utf-8') +
+        email.encode('utf-8')
     ).hexdigest()
 
     return APPLICATION_URL.format(
@@ -96,4 +97,4 @@ def get_abc_oauth_token():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=PORT)
