@@ -41,7 +41,7 @@ abc = oauth.remote_app(
 
 
 def _generate_shared_key_url(email):
-    ts = dt.datetime.now().strftime('%Y%M%d%H%M%S')
+    ts = dt.datetime.now().strftime('%Y%m%d%H%M%S')
 
     hash = hashlib.sha256(
         SHARED_KEY.encode('utf-8') +
@@ -56,14 +56,27 @@ def _generate_shared_key_url(email):
     )
 
 
-@app.route('/')
-def index():
+def _get_email():
+    """Get the user's email from their profile"""
+
     if 'abc_token' in session:
         me = abc.get('/api/v1/user/me/')
-        data = me.data
-        data["unicorm_redirect_url"] = _generate_shared_key_url('SSO.test@noreply.com')
-        return jsonify(data)
-    return redirect(url_for('login'))
+        if me.status != 200:
+            return None
+
+        return me.data["email"]
+
+    return None
+
+
+@app.route('/cyber')
+def cyber():
+    email = _get_email()
+
+    if not email:
+        return redirect(url_for('login'))
+    else:
+        return redirect(_generate_shared_key_url(email))
 
 
 @app.route('/login')
@@ -74,21 +87,22 @@ def login():
 @app.route('/logout')
 def logout():
     session.pop('abc_token', None)
-    return redirect(url_for('index'))
+    return redirect(url_for('cyber'))
 
 
 @app.route('/login/authorized')
 def authorized():
+    # TODO: Test failed auth flow, e.g ?error=access-denied
+    # it should handle this situation correctly
     resp = abc.authorized_response()
     if resp is None or resp.get('access_token') is None:
         return 'Access denied: reason=%s error=%s resp=%s' % (
             request.args['error'],
             request.args['error_description'],
-            resp
-        )
+            resp)
     session['abc_token'] = (resp['access_token'], '')
 
-    return redirect(url_for('index'))
+    return redirect(url_for('cyber'))
 
 
 @abc.tokengetter
