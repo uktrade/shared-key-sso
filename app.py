@@ -24,12 +24,12 @@ ABC_AUTHORIZE_URL = urljoin(ABC_BASE_URL, '/o/authorize/')
 PORT = os.getenv('PORT', 5000)
 
 logger = logging.getLogger(__name__)
-sentry = Sentry(app, dsn=os.getenv('SENTRY_DSN'))
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
 app.debug = os.getenv('DEBUG') == 'True'
 oauth = OAuth(app)
+sentry = Sentry(app, dsn=os.getenv('SENTRY_DSN'))
 
 abc = oauth.remote_app(
    'abc',
