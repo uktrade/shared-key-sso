@@ -6,7 +6,9 @@ from urllib.parse import urljoin, quote_plus
 
 from flask import Flask, redirect, url_for, session, request, jsonify
 from flask_oauthlib.client import OAuth
+
 from dotenv import load_dotenv
+from raven.contrib.flask import Sentry
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
 load_dotenv(dotenv_path)
@@ -22,6 +24,7 @@ ABC_AUTHORIZE_URL = urljoin(ABC_BASE_URL, '/o/authorize/')
 PORT = os.getenv('PORT', 5000)
 
 logger = logging.getLogger(__name__)
+sentry = Sentry(app, dsn=os.getenv('SENTRY_DSN'))
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
@@ -67,6 +70,11 @@ def _get_email():
         return me.data["email"]
 
     return None
+
+
+@app.route('/')
+def index():
+    return redirect(url_for('cyber'))
 
 
 @app.route('/cyber')
