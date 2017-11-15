@@ -2,4 +2,6 @@ flask
 flask_oauthlib
 python-dotenv
 
+raven
+
 gunicorn

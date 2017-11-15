@@ -16,6 +16,7 @@ jinja2==2.9.6             # via flask
 markupsafe==1.0           # via jinja2
 oauthlib==2.0.6           # via flask-oauthlib, requests-oauthlib
 python-dotenv==0.7.1
+raven==6.3.0
 requests-oauthlib==0.8.0  # via flask-oauthlib
 requests==2.18.4          # via requests-oauthlib
 urllib3==1.22             # via requests
