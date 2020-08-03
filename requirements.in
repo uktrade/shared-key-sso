@@ -1,8 +1,10 @@
 flask
 flask_oauthlib
 python-dotenv
+flask-wtf
 
 raven
 blinker
+whitenoise
 
 gunicorn
